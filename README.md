@@ -1,20 +1,20 @@
 # 🍀Grid Dynamics Internship Project🍀
 Online shop project on Java with Spring Boot and MySQL.
 
-## Software Must Have
+## 💻 Software Must Have
 * Docker
 * IDE (Intellij IDEA, Eclipse, etc...)
 * Postman
-## 📝Installing and configurating
+## 📝 Installing and configurating
 
-### 💾Downloading repository
+### 💾 Downloading repository
 
 Download or clone project on your enviroment.
 ```bash
 git clone https://github.com/borysenkox/gd-internship
 ```
 
-### 📚Configurating MySQL on Docker
+### 📚 Configurating MySQL on Docker
 
 Downloading MySQL server with version 8.0.22 on Docker:
 ```bash
@@ -62,7 +62,7 @@ docker restart <name>
 ```
 <b>SQL server is installed and configured!</b>
 
-### 🌏Connection to MySQL
+### 🌏 Connection to MySQL
 
 Input command in terminal:
 ```bash
@@ -72,7 +72,7 @@ Enter your *password*.
 
 <b>Congratulations, you are connected!</b>
 
-### 📄Running SQL scripts on Docker
+### 📄 Running SQL scripts on Docker
 
 Move SQL script from your local machine to Docker (<b>ATTENTION!</b> You have to be in directory where file is located.):
 ```bash
