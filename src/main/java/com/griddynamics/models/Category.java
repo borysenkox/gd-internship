@@ -1,4 +1,4 @@
-package com.griddynamics.model;
+package com.griddynamics.models;
 
 import java.io.Serializable;
 

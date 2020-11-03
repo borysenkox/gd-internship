@@ -1,13 +1,13 @@
 package com.griddynamics.controllers;
 
-import com.griddynamics.model.Product;
+import com.griddynamics.models.Product;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ProductController {
+public class ProductsController {
     @GetMapping
     public String hello() {
         return "Hello Product";
