@@ -1,20 +1,22 @@
 package com.griddynamics.controllers;
 
 import com.griddynamics.models.Product;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductsController {
-    @GetMapping
+    @PutMapping("/product")
     public String hello() {
         return "Hello Product";
     }
 
-    @PostMapping
+    @PutMapping("/product")
     public String goodBuy(@RequestBody Product product) {
         return product.toString();
+    }
+
+    @PutMapping("/product")
+    public String addNewProduct(@RequestBody Product product) {
+        return null;
     }
 }
