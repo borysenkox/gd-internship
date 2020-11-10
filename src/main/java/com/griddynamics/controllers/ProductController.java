@@ -16,12 +16,12 @@ public class ProductController {
         return "In getProductById()";
     }
 
-    @PostMapping("/product")
+    @PutMapping("/product")
     public String addNewProduct() {
         return "In addNewProduct()";
     }
 
-    @PutMapping("/product/{id}")
+    @PostMapping("/product/{id}")
     public String editProductById(@PathVariable("id") int id) {
         return "In editProductById()";
     }
