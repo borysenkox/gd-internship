@@ -58,7 +58,7 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> editProductById(@PathVariable Integer id, @RequestBody Product product) {
 
         if (id == null || product == null) {
