@@ -1,4 +1,4 @@
-package service;
+package com.griddynamics.service;
 
 import com.griddynamics.models.Product;
 import org.springframework.stereotype.Service;
