@@ -20,7 +20,7 @@ public class ProductService {
 
     }
 
-    public void update(Integer id, Product product) {
+    public void update(Product product) {
 
     }
 

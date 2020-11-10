@@ -58,14 +58,14 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> editProductById(@PathVariable Integer id, @RequestBody Product product) {
+    @PostMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Product> editProductById(@RequestBody Product product) {
 
-        if (id == null || product == null) {
+        if (product == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        productService.update(id, product);
+        productService.update(product);
 
         return new ResponseEntity<>(product, HttpStatus.OK);
     }

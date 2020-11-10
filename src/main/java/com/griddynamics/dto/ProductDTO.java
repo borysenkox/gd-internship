@@ -1,14 +1,9 @@
-package com.griddynamics.models;
+package com.griddynamics.dto;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 @Data
-public class Product {
-    @Id
+public class ProductDTO {
     private int id;
     private String name;
     private double price;
