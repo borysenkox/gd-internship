@@ -1,12 +1,12 @@
 package com.griddynamics.controllers;
 
 import com.griddynamics.models.Product;
+import com.griddynamics.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.ProductService;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ProductController {
 
     @GetMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = this.productService.findAll();
+        List<Product> products = productService.findAll();
 
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,7 +38,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Product product = this.productService.getById(id);
+        Product product = productService.getById(id);
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -53,7 +53,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        this.productService.save(product);
+        productService.save(product);
 
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
@@ -65,7 +65,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        this.productService.update(id, product);
+        productService.update(id, product);
 
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
@@ -82,7 +82,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        this.productService.deleteById(id);
+        productService.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
