@@ -1,6 +1,6 @@
 package com.griddynamics.service;
 
-import com.griddynamics.models.Product;
+import com.griddynamics.dto.ProductDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,19 +8,19 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    public List<Product> findAll() {
+    public List<ProductDTO> findAll() {
         return null;
     }
 
-    public Product getById(Integer id) {
+    public ProductDTO getById(Integer id) {
         return null;
     }
 
-    public void save(Product product) {
+    public void save(ProductDTO product) {
 
     }
 
-    public void update(Product product) {
+    public void update(ProductDTO product) {
 
     }
 

@@ -1,6 +1,6 @@
 package com.griddynamics.controllers;
 
-import com.griddynamics.models.Product;
+import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,8 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.findAll();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.findAll();
 
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -33,12 +33,12 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Product product = productService.getById(id);
+        ProductDTO product = productService.getById(id);
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PutMapping("/product")
-    public ResponseEntity<Product> addNewProduct(@RequestBody Product product) {
+    public ResponseEntity<ProductDTO> addNewProduct(@RequestBody ProductDTO product) {
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -59,7 +59,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> editProductById(@RequestBody Product product) {
+    public ResponseEntity<ProductDTO> editProductById(@RequestBody ProductDTO product) {
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -71,12 +71,12 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Integer id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Product product = this.productService.getById(id);
+        ProductDTO product = productService.getById(id);
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
