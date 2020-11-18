@@ -17,7 +17,7 @@ USE outfit_shop_db;
 	'616.13', "Stock up on comfort with this six pack of socks from Under Armour, in a no-show rise with stretch fabric.",
 	"Under Armor", "https://slimages.macys.com/is/image/MCY/products/4/optimized/10189354_fpx.tif?op_sharpen=1&wid=1230&hei=1500&fit=fit,1&$filterxlrg$");
 	 
-	INSERT INTO product_category(product_id, category_id) VALUES (1, 4), (2, 6), (3, 9);
+	INSERT INTO product_category(id, product_id, category_id) VALUES (1, 1, 4), (2, 2, 6), (3, 3, 9);
 	 
 	INSERT INTO inventory(id, product_id, size, quantity) VALUES (1, 1, 'M', 24), (2, 1, 'L', 18), (3, 1, 'S', 6),
 	(4, 2, 'XS', 3), (5, 2, 'M', 19), (6, 2, 'XL', 12), (7, 3, '34-36', 7), (8, 3, '36-38', 20), (9, 3, '38-40', 12);
@@ -41,7 +41,7 @@ USE outfit_shop_db;
     INSERT INTO ordering(id, client_id, sum_price) VALUES 
     (1, 1, 1273.90), (2, 2, 1506.33);
     
-    INSERT INTO ordering_inventory(ordering_id, inventory_id) VALUES (1, 1), (2, 5), (2, 9);
+    INSERT INTO ordering_inventory(id, ordering_id, inventory_id) VALUES (1, 1, 1), (2, 2, 5), (3, 2, 9);
     
     COMMIT;
     
