@@ -1,11 +1,13 @@
 package com.griddynamics.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "Product")
 @Table(name = "product")
@@ -21,8 +23,8 @@ public class Product extends AbstractEntity {
 
     private String image;
 
-    @OneToMany(
-            cascade = CascadeType.ALL)
+    @ManyToMany(
+            cascade = CascadeType.DETACH)
     private List<Category> category = new ArrayList<>();
 
     public Product() { }
