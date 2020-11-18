@@ -16,7 +16,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +23,8 @@ import static org.mockito.Mockito.when;
 public class ProductControllerTest {
     private static final ProductDTO PRODUCT = new ProductDTO(1, "testName", 100, "testDesc", "testBrand", "img.png");
 
-    List<ProductDTO> products = Collections.singletonList(PRODUCT);
+    //given
+    private static final List<ProductDTO> products = Collections.singletonList(PRODUCT);
 
     @InjectMocks
     private ProductController productController;
@@ -34,7 +34,9 @@ public class ProductControllerTest {
 
     @Test
     public void getAllProductsShouldReturnNullTest() {
+        //when
         when(productService.findAll()).thenReturn(null);
+        //then
         ResponseEntity<List<ProductDTO>> result = productController.getAllProducts();
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
         assertNull(result.getBody());
@@ -43,7 +45,9 @@ public class ProductControllerTest {
 
     @Test
     public void getAllProductsShouldReturnProductsTest() {
+        //when
         when(productService.findAll()).thenReturn(products);
+        //then
         ResponseEntity<List<ProductDTO>> result = productController.getAllProducts();
         assertEquals(result.getStatusCode(), HttpStatus.OK);
         assertEquals(result.getBody(), products);
@@ -52,7 +56,9 @@ public class ProductControllerTest {
 
     @Test
     public void getProductByIdShouldReturnsNullIdTest() {
-        when(productService.getById(anyInt())).thenReturn(null);
+        //when
+        when(productService.getById(2)).thenReturn(null);
+        //then
         ResponseEntity<ProductDTO> result = productController.getProductById(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
@@ -60,7 +66,9 @@ public class ProductControllerTest {
 
     @Test
     public void getProductByIdShouldReturnsNullProductTest() {
-        when(productService.getById(anyInt())).thenReturn(null);
+        //when
+        when(productService.getById(2)).thenReturn(null);
+        //then
         ResponseEntity<ProductDTO> result = productController.getProductById(2);
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
         assertNull(result.getBody());
@@ -68,7 +76,9 @@ public class ProductControllerTest {
 
     @Test
     public void getProductByIdShouldReturnsProductTest() {
+        //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.getProductById(PRODUCT.getId());
         assertEquals(result.getStatusCode(), HttpStatus.OK);
         assertEquals(result.getBody(), PRODUCT);
@@ -105,7 +115,9 @@ public class ProductControllerTest {
 
     @Test
     public void deleteProductShouldReturnsNegativeTest() {
+        //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
@@ -113,14 +125,18 @@ public class ProductControllerTest {
 
     @Test
     public void deleteProductShouldReturnsNullProductTest() {
+        //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(2);
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void deleteProductShouldSuccessDeleteTest() {
+        //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(PRODUCT.getId());
         assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
     }
