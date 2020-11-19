@@ -2,13 +2,12 @@ package com.griddynamics.dto;
 
 import com.griddynamics.entities.Category;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class CategoryDTO implements Serializable {
-
-    private Integer id;
+public class CategoryDTO extends AbstractDTO {
 
     private String name;
 
