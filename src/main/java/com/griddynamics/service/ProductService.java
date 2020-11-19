@@ -4,25 +4,33 @@ import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Product;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
+import com.griddynamics.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class ProductService {
 
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    ProductMapper productMapper;
+    private final ProductMapper productMapper;
+
+    private final Validator validator;
 
     @Autowired
-    ProductService(ProductRepository productRepository) {
+    ProductService(ProductRepository productRepository, ProductMapper productMapper,
+                   Validator validator) {
 
         this.productRepository = productRepository;
 
-        productMapper = new ProductMapper();
+        this.productMapper = productMapper;
+
+        this.validator = validator;
+
     }
 
     public List<ProductDTO> findAll() {
@@ -36,9 +44,8 @@ public class ProductService {
     }
 
     public ProductDTO getById(Integer id) {
-        if (id == null || id < 0) {
-            return null;
-        }
+
+        validator.validateId(id);
 
         Optional<Product> optProduct = productRepository.findById(id);
 
@@ -52,22 +59,25 @@ public class ProductService {
     }
 
     public void save(ProductDTO productDTO) {
+
         Product product;
 
         product = productMapper.mapEntity(productDTO);
 
-        productRepository.save(product);
+        product = productRepository.save(product);
+
+        productMapper.mapDTO(product, productDTO);
     }
 
     public void update(ProductDTO productDTO) {
-        if (productDTO == null || productDTO.getId() < 0) {
-            return;
-        }
+
+        validator.validateDTO(productDTO);
 
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
-            return;
+            throw new NoSuchElementException("Cannot update product. There is wrong argument product id OR such" +
+                    "element is not present in the database.");
         }
 
         Product product = optProduct.get();
@@ -78,9 +88,8 @@ public class ProductService {
     }
 
     public void deleteById(Integer id) {
-        if (id == null || id < 0) {
-            return;
-        }
+
+        validator.validateId(id);
 
         productRepository.deleteById(id);
     }
