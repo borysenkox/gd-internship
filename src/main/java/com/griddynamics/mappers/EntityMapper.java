@@ -1,6 +1,7 @@
 package com.griddynamics.mappers;
 
 import com.griddynamics.entities.AbstractEntity;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
@@ -12,28 +13,44 @@ import java.util.List;
  * @param <E> class.
  * @param <D> DTO class.
  */
+
 public abstract class EntityMapper<E extends AbstractEntity, D> {
 
 
     /**
-     * Maps entity {@code E} to its DTO object {@code D}.
+     * Maps entity {@code E} to its newly created DTO object {@code D}.
      * @param e database entity
      * @return DTO object of entity
      */
     public abstract D mapDTO(E e);
 
     /**
-     * Maps DTO object of entity {@code D} to database entity {@code E}.
+     * Maps DTO object of entity {@code D} to newly created database entity {@code E}.
      * @param d DTO object
      * @return database entity
      */
     public abstract E mapEntity(D d);
 
     /**
+     * Maps entity {@code E} to its DTO object {@code D}.
+     * @param e database entity
+     * @param d DTO object
+     * @return {@code d} object with mapping-state changes.
+     */
+    public abstract D mapDTO(E e, D d);
+
+    /**
+     * Maps DTO object of entity {@code D} to database entity {@code E}.
+     * @param d DTO object
+     * @return {@code e} object with mapping-state changes.
+     */
+    public abstract E mapEntity(D d, E e);
+
+    /**
      * Maps List of DTO objects {@code D} to List of Entity objects {@code E}.
      * To use this default implementation - {@link EntityMapper#mapEntity(D)} should also be implemented.
      * @param dList {@link List<D>} that used as source of {@code D} objects
-     *      *                                          for mapping to {@code E} objects.
+     *                              for mapping to {@code E} objects.
      * @return object of {@link List<E>} that based on {@code dList}.
      */
     public List<E> mapList(List<D> dList) {

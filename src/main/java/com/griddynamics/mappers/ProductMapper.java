@@ -5,25 +5,51 @@ import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
 import com.griddynamics.exceptions.MappingException;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Component
 public class ProductMapper extends EntityMapper<Product, ProductDTO> {
 
     @Override
-    public Product mapEntity(ProductDTO productDTO) {
-        if (productDTO == null) {
-            throw new MappingException("ProductDTO is null.");
+    public ProductDTO mapDTO(Product product, ProductDTO productDTO) {
+        if (product == null || productDTO == null) {
+            throw new MappingException("One of arguments is null.");
         }
-        Product product = new Product();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setBrand(product.getBrand());
+        productDTO.setImage(product.getImage());
+
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+
+        productDTO.setCategoryDTOList(categoryDTOList);
+
+        List<Category> categoryList = product.getCategory();
+
+        CategoryMapper categoryMapper = new CategoryMapper();
+
+        categoryList.forEach(category -> categoryDTOList.add(categoryMapper.mapDTO(category)));
+
+        return productDTO;
+    }
+
+    @Override
+    public Product mapEntity(ProductDTO productDTO, Product product) {
+        if (productDTO == null) {
+            throw new MappingException("One of arguments is null.");
+        }
 
         product.setId(productDTO.getId());
         product.setName(productDTO.getName());
         product.setBrand(productDTO.getBrand());
-        product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
         product.setImage(productDTO.getImage());
 
         List<CategoryDTO> categoryDTOList = new ArrayList<>();
@@ -34,15 +60,10 @@ public class ProductMapper extends EntityMapper<Product, ProductDTO> {
 
         List<Category> categoryList = new ArrayList<>();
 
-        categoryDTOList.forEach(categoryDTO -> {
-            Category category = new Category();
+        CategoryMapper categoryMapper = new CategoryMapper();
 
-            category.setId(categoryDTO.getId());
-            category.setName(categoryDTO.getName());
-            category.setParent(category.getParent());
-
-            categoryList.add(category);
-        });
+        categoryDTOList.forEach(categoryDTO -> 
+            categoryList.add(categoryMapper.mapEntity(categoryDTO)));
 
         product.setCategory(categoryList);
 
@@ -50,12 +71,19 @@ public class ProductMapper extends EntityMapper<Product, ProductDTO> {
     }
 
     @Override
+    public Product mapEntity(ProductDTO productDTO) {
+        if (productDTO == null) {
+            throw new MappingException("ProductDTO is null.");
+        }
+        return mapEntity(productDTO, new Product());
+    }
+
+    @Override
     public ProductDTO mapDTO(Product product) {
         if (product == null) {
             throw new MappingException("Product is null.");
         }
-
-        return new ProductDTO(product);
+        return mapDTO(product, new ProductDTO());
     }
 
     @Override
