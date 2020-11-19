@@ -3,15 +3,14 @@ package com.griddynamics.dto;
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ProductDTO implements Serializable {
-
-    private Integer id;
+public class ProductDTO extends AbstractDTO {
 
     private String name;
 
