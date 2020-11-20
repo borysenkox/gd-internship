@@ -82,7 +82,9 @@ public class ProductService {
 
         productMapper.mapUpdate(productDTO, product);
 
-        productRepository.save(product);
+        product = productRepository.save(product);
+
+        productMapper.mapDTO(product, productDTO);
     }
 
     public void deleteById(Integer id) {
