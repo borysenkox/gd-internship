@@ -34,7 +34,9 @@ public class ProductMapper extends EntityMapper<Product, ProductDTO> {
 
         CategoryMapper categoryMapper = new CategoryMapper();
 
-        categoryList.forEach(category -> categoryDTOList.add(categoryMapper.mapDTO(category)));
+        if (categoryList != null) {
+            categoryList.forEach(category -> categoryDTOList.add(categoryMapper.mapDTO(category)));
+        }
 
         return productDTO;
     }
