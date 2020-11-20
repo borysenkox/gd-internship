@@ -29,7 +29,8 @@ public class Product extends AbstractEntity {
 
     public Product() { }
 
-    public Product(String name, Double price, String description, String brand, String image, List<Category> category) {
+    public Product(Integer id, String name, Double price, String description, String brand, String image, List<Category> category) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
@@ -38,4 +39,12 @@ public class Product extends AbstractEntity {
         this.category = category;
     }
 
+    public Product(String name, Double price, String description, String brand, String image, List<Category> category) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.brand = brand;
+        this.image = image;
+        this.category = category;
+    }
 }
