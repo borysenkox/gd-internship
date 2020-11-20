@@ -49,9 +49,12 @@ public class ProductService {
 
         Optional<Product> optProduct = productRepository.findById(id);
 
-        ProductDTO productDTO = new ProductDTO();
+        ProductDTO productDTO = null;
 
-        optProduct.ifPresent(product -> productMapper.mapDTO(product, productDTO));
+        if (optProduct.isPresent()) {
+            productDTO = new ProductDTO();
+            productMapper.mapDTO(optProduct.get(), productDTO);
+        }
 
         return productDTO;
     }
