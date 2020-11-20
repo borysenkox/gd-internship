@@ -30,8 +30,8 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
     @Override
     public CategoryDTO mapDTO(Category category, CategoryDTO categoryDTO) {
         categoryDTO.setId(category.getId());
-        category.setName(category.getName());
-        category.setParent(category.getParent());
+        categoryDTO.setName(category.getName());
+        categoryDTO.setParent(category.getParent());
 
         return categoryDTO;
     }
