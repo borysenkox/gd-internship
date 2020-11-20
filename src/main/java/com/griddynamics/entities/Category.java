@@ -18,9 +18,14 @@ public class Category extends AbstractEntity {
 
     public Category() { }
 
-    public Category(String name, Category parent) {
+    public Category(Integer id, String name, Category parent) {
+        this.id = id;
         this.name = name;
         this.parent = parent;
     }
 
+    public Category(String name, Category parent) {
+        this.name = name;
+        this.parent = parent;
+    }
 }
