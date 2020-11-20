@@ -19,11 +19,11 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
-    private final Validator validator;
+    private final Validator<ProductDTO> validator;
 
     @Autowired
     ProductService(ProductRepository productRepository, ProductMapper productMapper,
-                   Validator validator) {
+                   Validator<ProductDTO> validator) {
 
         this.productRepository = productRepository;
 
@@ -34,6 +34,7 @@ public class ProductService {
     }
 
     public List<ProductDTO> findAll() {
+
         List<ProductDTO> productDTOList;
 
         Iterable<Product> productIterable = productRepository.findAll();
@@ -61,6 +62,8 @@ public class ProductService {
 
     public void save(ProductDTO productDTO) {
 
+        validator.validateDTO(productDTO);
+
         Product product;
 
         product = productMapper.mapEntity(productDTO);
@@ -72,7 +75,7 @@ public class ProductService {
 
     public void update(ProductDTO productDTO) {
 
-        validator.validateDTO(productDTO);
+        validator.validateId(productDTO.getId());
 
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
