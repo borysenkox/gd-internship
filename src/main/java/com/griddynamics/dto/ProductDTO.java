@@ -26,7 +26,7 @@ public class ProductDTO extends AbstractDTO {
 
     public ProductDTO() { }
 
-    public ProductDTO(int id, String name, double price, String description, String brand, String image,
+    public ProductDTO(Integer id, String name, Double price, String description, String brand, String image,
                       List<CategoryDTO> categoryDTOList) {
         this.id = id;
         this.name = name;
