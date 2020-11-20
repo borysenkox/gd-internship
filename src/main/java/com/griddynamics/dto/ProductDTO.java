@@ -3,12 +3,11 @@ package com.griddynamics.dto;
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 public class ProductDTO extends AbstractDTO {
 
@@ -57,5 +56,25 @@ public class ProductDTO extends AbstractDTO {
         categoryList.forEach(category -> categoryDTOList.add(new CategoryDTO(category)));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (id != null) return super.equals(o);
+        if (this == o) return true;
+        if (!(o instanceof ProductDTO)) return false;
+        if (!super.equals(o)) return false;
+        ProductDTO that = (ProductDTO) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(price, that.price) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(brand, that.brand) &&
+                Objects.equals(image, that.image) &&
+                Objects.equals(categoryDTOList, that.categoryDTOList);
+    }
 
+    @Override
+    public int hashCode() {
+        if (id != null) return super.hashCode();
+
+        return Objects.hash(super.hashCode(), name, price, description, brand, image, categoryDTOList);
+    }
 }

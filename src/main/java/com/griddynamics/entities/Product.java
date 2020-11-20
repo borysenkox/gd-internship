@@ -1,13 +1,12 @@
 package com.griddynamics.entities;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "Product")
 @Table(name = "product")
@@ -46,5 +45,27 @@ public class Product extends AbstractEntity {
         this.brand = brand;
         this.image = image;
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (id != null) return super.equals(o);
+        if (this == o) return true;
+        if (!(o instanceof Product)) return false;
+        if (!super.equals(o)) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) &&
+                Objects.equals(price, product.price) &&
+                Objects.equals(description, product.description) &&
+                Objects.equals(brand, product.brand) &&
+                Objects.equals(image, product.image) &&
+                Objects.equals(category, product.category);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) return super.hashCode();
+
+        return Objects.hash(super.hashCode(), name, price, description, brand, image, category);
     }
 }
