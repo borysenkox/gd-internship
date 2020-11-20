@@ -25,6 +25,10 @@ public abstract class AbstractDTO implements Serializable {
             return false;
         }
         AbstractDTO dto = (AbstractDTO) obj;
-        return id.equals(dto.id);
+        if (dto.id != null) {
+            return id.equals(dto.id);
+        }
+
+        return Objects.equals(this, dto);
     }
 }
