@@ -1,7 +1,7 @@
 package com.griddynamics.mappers;
 
+import com.griddynamics.dto.AbstractDTO;
 import com.griddynamics.entities.AbstractEntity;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
  * @param <D> DTO class.
  */
 
-public abstract class EntityMapper<E extends AbstractEntity, D> {
+public abstract class EntityMapper<E extends AbstractEntity, D extends AbstractDTO> {
 
 
     /**
