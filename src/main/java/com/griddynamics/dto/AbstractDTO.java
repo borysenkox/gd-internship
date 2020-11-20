@@ -1,6 +1,5 @@
 package com.griddynamics.dto;
 
-import com.griddynamics.entities.AbstractEntity;
 import lombok.Data;
 
 import java.io.Serializable;
