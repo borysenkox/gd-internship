@@ -1,37 +1,28 @@
 package com.griddynamics.validators;
 
 import com.griddynamics.dto.AbstractDTO;
-import com.griddynamics.entities.AbstractEntity;
 import org.springframework.stereotype.Component;
 
+/**
+ * Interface that provides validation of the DTO objects.
+ * Mainly used to check state of NOT NULL fields of DTO objects.
+ *
+ * @param <D> DTO object, subclass of {@link AbstractDTO} that has to be validated
+ */
 @Component
-public class Validator {
+public interface Validator<D extends AbstractDTO> {
 
-    public void validateEntity(AbstractEntity abstractEntity) {
-        if (abstractEntity == null) {
-            throw new IllegalArgumentException("Entity object cannot be null.");
-        }
+    /**
+     * Validates DTO object without validating ID.
+     *
+     * @param d {@link AbstractDTO} subclass that have to be validated
+     */
+    void validateDTO(D d);
 
-        Integer id = abstractEntity.getId();
-
-        validateId(id);
-    }
-
-    public void validateDTO(AbstractDTO abstractDTO) {
-        if (abstractDTO == null) {
-            throw new IllegalArgumentException("DTO object cannot be null.");
-        }
-
-        Integer id = abstractDTO.getId();
-
-        validateId(id);
-    }
-
-    public void validateId(Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID of the object cannot be null.");
-        } else if (id < 0) {
-            throw new IllegalArgumentException("ID of the object cannot be less than 0.");
-        }
-    }
+    /**
+     * Validates id of the some object.
+     *
+     * @param id id of the some object
+     */
+    void validateId(Integer id);
 }
