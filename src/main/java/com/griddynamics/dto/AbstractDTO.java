@@ -1,5 +1,6 @@
 package com.griddynamics.dto;
 
+import com.griddynamics.entities.AbstractEntity;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -21,14 +22,13 @@ public abstract class AbstractDTO implements Serializable {
             return true;
         }
 
-        if (!getClass().equals(obj.getClass()) ) {
+        if (!getClass().equals(obj.getClass())) {
             return false;
         }
         AbstractDTO dto = (AbstractDTO) obj;
-        if (dto.id != null) {
-            return id.equals(dto.id);
-        }
 
-        return Objects.equals(this, dto);
+        return id.equals(dto.id);
     }
+
+
 }
