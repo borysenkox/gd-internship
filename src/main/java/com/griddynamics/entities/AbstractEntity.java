@@ -28,15 +28,11 @@ public abstract class AbstractEntity implements Serializable {
             return true;
         }
 
-        if (!getClass().equals(obj.getClass()) ) {
+        if (!getClass().equals(obj.getClass())) {
             return false;
         }
         AbstractEntity ent = (AbstractEntity) obj;
 
-        if (ent.id != null) {
-            return id.equals(ent.id);
-        }
-
-        return Objects.equals(this, obj);
+        return id.equals(ent.id);
     }
 }
