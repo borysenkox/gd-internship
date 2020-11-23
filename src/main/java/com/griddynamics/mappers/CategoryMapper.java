@@ -14,6 +14,7 @@ import java.util.stream.StreamSupport;
 public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
     @Override
     public CategoryDTO mapDTO(Category category) {
+
         CategoryDTO categoryDTO = new CategoryDTO();
 
         mapDTO(category, categoryDTO);
@@ -23,6 +24,7 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public Category mapEntity(CategoryDTO categoryDTO) {
+
         Category category = new Category();
 
         mapEntity(categoryDTO, category);
@@ -32,6 +34,7 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public CategoryDTO mapDTO(Category category, CategoryDTO categoryDTO) {
+
         categoryDTO.setId(category.getId());
         categoryDTO.setName(category.getName());
         categoryDTO.setParent(category.getParent());
@@ -51,6 +54,10 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public Category mapUpdate(CategoryDTO categoryDTO, Category category) {
-        return null;
+
+        category.setName(categoryDTO.getName() == null ? category.getName() : categoryDTO.getName());
+        category.setParent(categoryDTO.getParent() == null ? category.getParent() : categoryDTO.getParent());
+
+        return category;
     }
 }
