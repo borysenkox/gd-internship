@@ -2,6 +2,8 @@ package com.griddynamics.dto;
 
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
+import com.griddynamics.exceptions.MappingException;
+import com.griddynamics.mappers.CategoryMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -44,17 +46,26 @@ public class ProductDTO extends AbstractDTO {
     }
 
     public ProductDTO(Product product) {
-        id = product.getId();
-        name = product.getName();
-        price = product.getPrice();
-        description = product.getDescription();
-        brand = product.getBrand();
-        image = product.getImage();
+        if (product == null ) {
+            throw new IllegalArgumentException("Product cannot be null.");
+        }
+        setId(product.getId());
+        setName(product.getName());
+        setPrice(product.getPrice());
+        setDescription(product.getDescription());
+        setBrand(product.getBrand());
+        setImage(product.getImage());
 
-        categoryDTOList = new ArrayList<>();
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+
+        setCategoryDTOList(categoryDTOList);
 
         List<Category> categoryList = product.getCategory();
 
-        categoryList.forEach(category -> categoryDTOList.add(new CategoryDTO(category)));
+        CategoryMapper categoryMapper = new CategoryMapper();
+
+        if (categoryList != null) {
+            categoryList.forEach(category -> categoryDTOList.add(categoryMapper.mapDTO(category)));
+        }
     }
 }
