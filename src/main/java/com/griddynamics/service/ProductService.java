@@ -2,9 +2,7 @@ package com.griddynamics.service;
 
 import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Product;
-import com.griddynamics.exceptions.MappingException;
 import com.griddynamics.exceptions.ServiceException;
-import com.griddynamics.exceptions.ValidationException;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
 import com.griddynamics.validators.Validator;
@@ -37,13 +35,9 @@ public class ProductService {
 
     public List<ProductDTO> findAll() {
 
-        List<ProductDTO> productDTOList;
-
         Iterable<Product> productIterable = productRepository.findAll();
 
-        productDTOList = productMapper.mapDTOList(productIterable);
-
-        return productDTOList;
+        return productMapper.mapDTOList(productIterable);
     }
 
     public ProductDTO getById(Integer id) throws ServiceException {
@@ -65,9 +59,7 @@ public class ProductService {
 
         validator.validateDTO(productDTO);
 
-        Product product;
-
-        product = productMapper.mapEntity(productDTO);
+        Product product = productMapper.mapEntity(productDTO);
 
         product = productRepository.save(product);
 

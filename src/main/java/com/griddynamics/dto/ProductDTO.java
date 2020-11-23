@@ -3,12 +3,15 @@ package com.griddynamics.dto;
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
 import lombok.AllArgsConstructor;
+import com.griddynamics.exceptions.MappingException;
+import com.griddynamics.mappers.CategoryMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -28,6 +31,15 @@ public class ProductDTO extends AbstractDTO {
 
     private List<CategoryDTO> categoryDTOList;
 
+    private static CategoryMapper categoryMapper;
+
+    private static synchronized CategoryMapper getCategoryMapper() {
+        if (categoryMapper == null) {
+            categoryMapper = new CategoryMapper();
+        }
+        return categoryMapper;
+    }
+
     public ProductDTO(Integer id, String name, Double price, String description, String brand, String image,
                       List<CategoryDTO> categoryDTOList) {
         this.id = id;
@@ -45,6 +57,10 @@ public class ProductDTO extends AbstractDTO {
     }
 
     public ProductDTO(Product product) {
+        if (product == null ) {
+            throw new IllegalArgumentException("Product cannot be null.");
+        }
+
         id = product.getId();
         name = product.getName();
         price = product.getPrice();
@@ -52,10 +68,10 @@ public class ProductDTO extends AbstractDTO {
         brand = product.getBrand();
         image = product.getImage();
 
-        categoryDTOList = new ArrayList<>();
-
         List<Category> categoryList = product.getCategory();
 
-        categoryList.forEach(category -> categoryDTOList.add(new CategoryDTO(category)));
+        if (categoryList != null) {
+            categoryDTOList = categoryList.stream().map(category -> categoryMapper.mapDTO(category)).collect(Collectors.toList());
+        }
     }
 }
