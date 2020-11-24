@@ -16,15 +16,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductControllerTest {
     private static final ProductDTO PRODUCT = new ProductDTO(1, "testName", 100, "testDesc", "testBrand", "img.png");
-
-    //given
-    private static final List<ProductDTO> products = Collections.singletonList(PRODUCT);
 
     @InjectMocks
     private ProductController productController;
@@ -46,11 +42,11 @@ public class ProductControllerTest {
     @Test
     public void getAllProductsShouldReturnProductsTest() {
         //when
-        when(productService.findAll()).thenReturn(products);
+        when(productService.findAll()).thenReturn(Collections.singletonList(PRODUCT));
         //then
         ResponseEntity<List<ProductDTO>> result = productController.getAllProducts();
         assertEquals(result.getStatusCode(), HttpStatus.OK);
-        assertEquals(result.getBody(), products);
+        assertEquals(result.getBody(), Collections.singletonList(PRODUCT));
         verify(productService).findAll();
     }
 
@@ -62,6 +58,7 @@ public class ProductControllerTest {
         ResponseEntity<ProductDTO> result = productController.getProductById(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
+        verify(productService, never()).getById(PRODUCT.getId());
     }
 
     @Test
@@ -72,6 +69,7 @@ public class ProductControllerTest {
         ResponseEntity<ProductDTO> result = productController.getProductById(2);
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
         assertNull(result.getBody());
+        verify(productService, never()).getById(PRODUCT.getId());
     }
 
     @Test
@@ -90,13 +88,15 @@ public class ProductControllerTest {
         ResponseEntity<ProductDTO> result = productController.addNewProduct(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
+        verify(productService, never()).save(any(ProductDTO.class));
     }
 
     @Test
     public void addNewProductShouldReturnProductTest() {
         ResponseEntity<ProductDTO> result = productController.addNewProduct(PRODUCT);
         assertEquals(result.getStatusCode(), HttpStatus.CREATED);
-        assertEquals(result.getBody(), products.get(0));
+        assertEquals(result.getBody(), PRODUCT);
+        verify(productService).save(PRODUCT);
     }
 
     @Test
@@ -104,13 +104,15 @@ public class ProductControllerTest {
         ResponseEntity<ProductDTO> result = productController.editProductById(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
+        verify(productService, never()).update(any(ProductDTO.class));
     }
 
     @Test
     public void editProductByIdShouldReturnProductTest() {
         ResponseEntity<ProductDTO> result = productController.editProductById(PRODUCT);
         assertEquals(result.getStatusCode(), HttpStatus.OK);
-        assertEquals(result.getBody(), products.get(0));
+        assertEquals(result.getBody(), PRODUCT);
+        verify(productService).update(PRODUCT);
     }
 
     @Test
@@ -121,6 +123,7 @@ public class ProductControllerTest {
         ResponseEntity<ProductDTO> result = productController.deleteProduct(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
+        verify(productService, never()).deleteById(PRODUCT.getId());
     }
 
     @Test
@@ -130,6 +133,7 @@ public class ProductControllerTest {
         //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(2);
         assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
+        verify(productService, never()).deleteById(PRODUCT.getId());
     }
 
     @Test
@@ -139,5 +143,6 @@ public class ProductControllerTest {
         //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(PRODUCT.getId());
         assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
+        verify(productService).deleteById(PRODUCT.getId());
     }
 }
