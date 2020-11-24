@@ -2,6 +2,9 @@ package com.griddynamics.service;
 
 import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Product;
+import com.griddynamics.exceptions.MappingException;
+import com.griddynamics.exceptions.ServiceException;
+import com.griddynamics.exceptions.ValidationException;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
 import com.griddynamics.validators.Validator;
@@ -30,7 +33,6 @@ public class ProductService {
         this.productMapper = productMapper;
 
         this.validator = validator;
-
     }
 
     public List<ProductDTO> findAll() {
@@ -44,7 +46,7 @@ public class ProductService {
         return productDTOList;
     }
 
-    public ProductDTO getById(Integer id) {
+    public ProductDTO getById(Integer id) throws ServiceException {
 
         validator.validateId(id);
 
@@ -53,14 +55,13 @@ public class ProductService {
         ProductDTO productDTO = null;
 
         if (optProduct.isPresent()) {
-            productDTO = new ProductDTO();
-            productMapper.mapDTO(optProduct.get(), productDTO);
+            productDTO = productMapper.mapDTO(optProduct.get());
         }
 
         return productDTO;
     }
 
-    public void save(ProductDTO productDTO) {
+    public ProductDTO save(ProductDTO productDTO) throws ServiceException {
 
         validator.validateDTO(productDTO);
 
@@ -70,17 +71,17 @@ public class ProductService {
 
         product = productRepository.save(product);
 
-        productMapper.mapDTO(product, productDTO);
+        return productMapper.mapDTO(product);
     }
 
-    public void update(ProductDTO productDTO) {
+    public ProductDTO update(ProductDTO productDTO) throws ServiceException {
 
         validator.validateId(productDTO.getId());
 
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
-            throw new NoSuchElementException("Cannot update product. There is wrong argument product id OR such" +
+            throw new NoSuchElementException("Cannot update product. There is wrong argument product id OR such " +
                     "element is not present in the database.");
         }
 
@@ -90,10 +91,10 @@ public class ProductService {
 
         product = productRepository.save(product);
 
-        productMapper.mapDTO(product, productDTO);
+        return productMapper.mapDTO(product);
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Integer id) throws ServiceException {
 
         validator.validateId(id);
 

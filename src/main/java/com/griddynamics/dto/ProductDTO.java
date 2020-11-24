@@ -2,14 +2,18 @@ package com.griddynamics.dto;
 
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ProductDTO extends AbstractDTO {
 
@@ -25,8 +29,6 @@ public class ProductDTO extends AbstractDTO {
 
     private List<CategoryDTO> categoryDTOList;
 
-    public ProductDTO() { }
-
     public ProductDTO(Integer id, String name, Double price, String description, String brand, String image,
                       List<CategoryDTO> categoryDTOList) {
         this.id = id;
@@ -36,10 +38,10 @@ public class ProductDTO extends AbstractDTO {
         this.brand = brand;
         this.image = image;
 
-        this.categoryDTOList = new ArrayList<>();
-
         if (categoryDTOList != null) {
             this.categoryDTOList = new ArrayList<>(categoryDTOList);
+        } else {
+            this.categoryDTOList = new ArrayList<>();
         }
     }
 

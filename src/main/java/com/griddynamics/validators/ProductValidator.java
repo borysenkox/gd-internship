@@ -18,7 +18,7 @@ public class ProductValidator implements Validator<ProductDTO> {
     private static final String VALUE_NULL = "null";
 
     @Override
-    public void validateDTO(ProductDTO productDTO) {
+    public void validateDTO(ProductDTO productDTO) throws ValidationException {
         if (productDTO == null) {
             throw new ValidationException("ProductDTO cannot be null.");
         }
@@ -38,11 +38,11 @@ public class ProductValidator implements Validator<ProductDTO> {
     }
 
     @Override
-    public void validateId(Integer id) {
+    public void validateId(Integer id) throws ValidationException {
         if (id == null) {
-            throw new IllegalArgumentException("ID of the object cannot be null.");
+            throw new ValidationException("ID of the object cannot be null.");
         } else if (id < 0) {
-            throw new IllegalArgumentException("ID of the object cannot be less than 0.");
+            throw new ValidationException("ID of the object cannot be less than 0.");
         }
     }
 }
