@@ -3,12 +3,11 @@ package com.griddynamics.mappers;
 import com.griddynamics.dto.AbstractDTO;
 import com.griddynamics.entities.AbstractEntity;
 import com.griddynamics.exceptions.MappingException;
-import com.griddynamics.exceptions.ValidationException;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * {@code EntityMapper} - abstract class to map DTO objects to the {@link com.griddynamics.entities.AbstractEntity}
@@ -100,7 +99,9 @@ public abstract class EntityMapper<E extends AbstractEntity, D extends AbstractD
      * @param i {@link Iterable}
      * @return {@link List} with {@code E} entities
      */
-    public abstract List<E> mapList(Iterable<E> i);
+    public List<E> mapList(Iterable<E> i) {
+        return StreamSupport.stream(i.spliterator(), false).collect(Collectors.toList());
+    }
 
     /**
      * Maps {@link Iterable} from {@link CrudRepository#findAll()} to the {@link List} with {@code D} DTO objects.
@@ -108,7 +109,16 @@ public abstract class EntityMapper<E extends AbstractEntity, D extends AbstractD
      * @param i {@link Iterable}
      * @return {@link List} with {@code D} DTO objects
      */
-    public abstract List<D> mapDTOList(Iterable<E> i);
+    public List<D> mapDTOList(Iterable<E> i) {
+        return mapList(i).stream().map(e -> {
+            try {
+                return mapDTO(e);
+            } catch (MappingException exception) {
+                exception.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+    }
 
     /**
      * Changes all null-values variables of {@code E} entity to values of {@code D} object.

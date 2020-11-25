@@ -2,6 +2,8 @@ package controllers;
 
 import com.griddynamics.controllers.ProductController;
 import com.griddynamics.dto.ProductDTO;
+import com.griddynamics.exceptions.ServiceException;
+import com.griddynamics.exceptions.ValidationException;
 import com.griddynamics.service.ProductService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +22,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductControllerTest {
-    private static final ProductDTO PRODUCT = new ProductDTO(1, "testName", 100, "testDesc", "testBrand", "img.png");
+
+    private static final ProductDTO PRODUCT = new ProductDTO(1, "testProduct", 12., "description", "brand", "image", null);
 
     @InjectMocks
     private ProductController productController;
@@ -51,18 +54,28 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void getProductByIdShouldReturnsNullIdTest() {
+    public void getProductByIdShouldThrowServiceException() throws ServiceException {
+        //when
+        when(productService.getById(null)).thenThrow(ServiceException.class);
+        //then
+        ResponseEntity<ProductDTO> result = productController.getProductById(null);
+        assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertNull(result.getBody());
+    }
+
+    @Test
+    public void getProductByIdShouldReturnsNullIdTest() throws ServiceException {
         //when
         when(productService.getById(2)).thenReturn(null);
         //then
         ResponseEntity<ProductDTO> result = productController.getProductById(null);
-        assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
         assertNull(result.getBody());
         verify(productService, never()).getById(PRODUCT.getId());
     }
 
     @Test
-    public void getProductByIdShouldReturnsNullProductTest() {
+    public void getProductByIdShouldReturnsNullProductTest() throws ServiceException {
         //when
         when(productService.getById(2)).thenReturn(null);
         //then
@@ -73,7 +86,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void getProductByIdShouldReturnsProductTest() {
+    public void getProductByIdShouldReturnsProductTest() throws ServiceException {
         //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
         //then
@@ -84,7 +97,10 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void addNewProductShouldReturnNullTest() {
+    public void addNewProductShouldReturnNullTest() throws ServiceException {
+        //when
+        when(productService.save(null)).thenThrow(ValidationException.class);
+        //then
         ResponseEntity<ProductDTO> result = productController.addNewProduct(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
@@ -92,7 +108,10 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void addNewProductShouldReturnProductTest() {
+    public void addNewProductShouldReturnProductTest() throws ServiceException {
+        //when
+        when(productService.save(any(ProductDTO.class))).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.addNewProduct(PRODUCT);
         assertEquals(result.getStatusCode(), HttpStatus.CREATED);
         assertEquals(result.getBody(), PRODUCT);
@@ -100,7 +119,10 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void editProductByIdShouldReturnNullTest() {
+    public void editProductByIdShouldReturnNullTest() throws ServiceException {
+        //when
+        when(productService.update(null)).thenThrow(ValidationException.class);
+        //then
         ResponseEntity<ProductDTO> result = productController.editProductById(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertNull(result.getBody());
@@ -108,7 +130,10 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void editProductByIdShouldReturnProductTest() {
+    public void editProductByIdShouldReturnProductTest() throws ServiceException {
+        //when
+        when(productService.update(any(ProductDTO.class))).thenReturn(PRODUCT);
+        //then
         ResponseEntity<ProductDTO> result = productController.editProductById(PRODUCT);
         assertEquals(result.getStatusCode(), HttpStatus.OK);
         assertEquals(result.getBody(), PRODUCT);
@@ -116,9 +141,9 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void deleteProductShouldReturnsNegativeTest() {
+    public void deleteProductShouldReturnsNegativeTest() throws ServiceException {
         //when
-        when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
+        doThrow(ValidationException.class).when(productService).deleteById(null);
         //then
         ResponseEntity<ProductDTO> result = productController.deleteProduct(null);
         assertEquals(result.getStatusCode(), HttpStatus.BAD_REQUEST);
@@ -127,17 +152,14 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void deleteProductShouldReturnsNullProductTest() {
-        //when
-        when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
-        //then
+    public void deleteProductShouldReturnsNullProductTest() throws ServiceException {
         ResponseEntity<ProductDTO> result = productController.deleteProduct(2);
-        assertEquals(result.getStatusCode(), HttpStatus.NOT_FOUND);
+        assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
         verify(productService, never()).deleteById(PRODUCT.getId());
     }
 
     @Test
-    public void deleteProductShouldSuccessDeleteTest() {
+    public void deleteProductShouldSuccessDeleteTest() throws ServiceException {
         //when
         when(productService.getById(PRODUCT.getId())).thenReturn(PRODUCT);
         //then

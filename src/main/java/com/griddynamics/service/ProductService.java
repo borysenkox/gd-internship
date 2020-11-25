@@ -98,6 +98,12 @@ public class ProductService {
 
         validator.validateId(id);
 
+        Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) {
+            throw new ServiceException("Product with " + id + " is not present in the database.");
+        }
+
         productRepository.deleteById(id);
     }
 

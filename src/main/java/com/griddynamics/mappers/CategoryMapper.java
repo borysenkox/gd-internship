@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Component
 public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
@@ -45,31 +47,6 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
         category.setParent(categoryDTO.getParent());
 
         return category;
-    }
-
-
-    @Override
-    public List<Category> mapList(Iterable<Category> iterable) {
-
-        List<Category> categoryList = new ArrayList<>();
-
-        iterable.forEach(categoryList::add);
-
-        return categoryList;
-    }
-
-    @Override
-    public List<CategoryDTO> mapDTOList(Iterable<Category> iterable) {
-
-        List<CategoryDTO> listDTO;
-
-        List<Category> categoryList = mapList(iterable);
-
-        listDTO = categoryList.stream().map(this::mapDTO).collect(Collectors.toList());
-
-        categoryList.forEach(product -> listDTO.add(mapDTO(product)));
-
-        return listDTO;
     }
 
     @Override

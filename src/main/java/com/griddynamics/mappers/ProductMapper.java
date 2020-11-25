@@ -94,28 +94,6 @@ public class ProductMapper extends EntityMapper<Product, ProductDTO> {
     }
 
     @Override
-    public List<Product> mapList(Iterable<Product> iterable) {
-
-        List<Product> list = new ArrayList<>();
-
-        iterable.forEach(list::add);
-
-        return list;
-    }
-
-    @Override
-    public List<ProductDTO> mapDTOList(Iterable<Product> iterable) {
-
-        List<ProductDTO> dtoList;
-
-        List<Product> productList = mapList(iterable);
-
-        dtoList = mapDTOList(productList);
-
-        return dtoList;
-    }
-
-    @Override
     public Product mapUpdate(ProductDTO productDTO, Product product) throws MappingException {
 
         if (productDTO == null || product == null) {

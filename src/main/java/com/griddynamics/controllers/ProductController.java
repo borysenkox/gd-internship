@@ -85,7 +85,7 @@ public class ProductController {
         try {
             productService.deleteById(id);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
