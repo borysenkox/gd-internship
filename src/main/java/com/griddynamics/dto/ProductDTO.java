@@ -3,7 +3,6 @@ package com.griddynamics.dto;
 import com.griddynamics.entities.Category;
 import com.griddynamics.entities.Product;
 import lombok.AllArgsConstructor;
-import com.griddynamics.exceptions.MappingException;
 import com.griddynamics.mappers.CategoryMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

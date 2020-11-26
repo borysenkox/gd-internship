@@ -58,7 +58,6 @@ public class ProductServiceTest {
         Iterable<Product> iterable = productList;
 
 
-
         Mockito.when(productRepository.findAll()).thenReturn(iterable);
         Mockito.when(productMapper.mapDTOList(iterable)).thenReturn(expected);
 

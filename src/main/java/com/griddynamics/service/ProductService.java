@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -73,7 +72,7 @@ public class ProductService {
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
-            throw new NoSuchElementException("Cannot update product. There is wrong argument product id OR such " +
+            throw new ServiceException("Cannot update product. There is wrong argument product id OR such " +
                     "element is not present in the database.");
         }
 

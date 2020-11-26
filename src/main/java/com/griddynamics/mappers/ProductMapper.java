@@ -109,12 +109,10 @@ public class ProductMapper extends EntityMapper<Product, ProductDTO> {
 
         product.setImage(productDTO.getImage() == null ? product.getImage() : productDTO.getImage());
 
-        CategoryMapper categoryMapper = new CategoryMapper();
-
         List<Category> categoryList = null;
 
         if (productDTO.getCategoryDTOList() != null) {
-            categoryList = categoryMapper.mapList(productDTO.getCategoryDTOList());
+            categoryList = getCategoryMapper().mapList(productDTO.getCategoryDTOList());
         }
 
         product.setCategory(categoryList == null ? product.getCategory() : categoryList);

@@ -1,7 +1,6 @@
 package com.griddynamics.validators;
 
 import com.griddynamics.dto.AbstractDTO;
-import com.griddynamics.entities.AbstractEntity;
 import org.springframework.stereotype.Component;
 
 @Component
