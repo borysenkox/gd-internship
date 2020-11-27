@@ -10,6 +10,7 @@ import com.griddynamics.validators.Validator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -91,6 +92,7 @@ public class ProductServiceTest {
     public void getById_IdIsNotPresent_ShouldReturnNull() throws ServiceException {
 
         /* Given */
+
         Integer id = 2;
 
         ProductDTO productDTO = new ProductDTO();
@@ -206,6 +208,7 @@ public class ProductServiceTest {
 
     @Test(expected = ServiceException.class)
     public void deleteById_ObjectIsNotPresent_ShouldThrowServiceException() throws ServiceException {
+
 
         /* Given */
         Integer id = 2;
