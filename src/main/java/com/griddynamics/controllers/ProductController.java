@@ -1,6 +1,7 @@
 package com.griddynamics.controllers;
 
 import com.griddynamics.dto.ProductDTO;
+import com.griddynamics.exceptions.ServiceException;
 import com.griddynamics.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,14 @@ public class ProductController {
 
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
-        if (id == null) {
+
+        ProductDTO product;
+
+        try {
+            product = productService.getById(id);
+        } catch (ServiceException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        ProductDTO product = productService.getById(id);
 
         if (product == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,40 +53,40 @@ public class ProductController {
 
     @PutMapping("/product")
     public ResponseEntity<ProductDTO> addNewProduct(@RequestBody ProductDTO product) {
-        if (product == null) {
+
+        ProductDTO addedProduct;
+
+        try {
+            addedProduct = productService.save(product);
+        } catch (ServiceException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        productService.save(product);
-
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDTO> editProductById(@RequestBody ProductDTO product) {
 
-        if (product == null) {
+        ProductDTO updatedProduct;
+
+        try {
+            updatedProduct = productService.update(product);
+        } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        productService.update(product);
-
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Integer id) {
-        if (id == null) {
+
+        try {
+            productService.deleteById(id);
+        } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        ProductDTO product = productService.getById(id);
-
-        if (product == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        productService.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -1,11 +1,15 @@
 package com.griddynamics.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity(name = "Category")
 @Table(name = "category")
@@ -13,14 +17,12 @@ public class Category extends AbstractEntity {
 
     private String name;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Category parent;
 
-    public Category() { }
-
-    public Category(String name, Category parent) {
+    public Category(Integer id, String name, Category parent) {
+        this.id = id;
         this.name = name;
         this.parent = parent;
     }
-
 }
