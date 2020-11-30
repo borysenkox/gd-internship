@@ -158,7 +158,7 @@ public class CategoryServiceTest {
         Assert.assertEquals(categoryDTO, actual);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test
     public void update_CategoryIsNotPresentInTheDatabase_ShouldThrowServiceException() throws ServiceException {
 
         /* Given */
@@ -168,9 +168,15 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(updateCategory.getId())).thenReturn(Optional.empty());
 
         /* Then */
-        categoryService.update(updateCategory);
 
-        Mockito.verify(validator).validateDTO(updateCategory);
+        try {
+            categoryService.update(updateCategory);
+        } catch (ServiceException exception) {
+            Assert.assertEquals("Cannot update category. There is wrong argument category id OR such " +
+                    "element is not present in the database.", exception.getMessage());
+        }
+
+        Mockito.verify(validator).validateId(updateCategory.getId());
         Mockito.verify(categoryRepository).findById(updateCategory.getId());
         Mockito.verify(categoryRepository, never()).save(Mockito.any(Category.class));
         Mockito.verify(categoryMapper, never())
@@ -197,7 +203,7 @@ public class CategoryServiceTest {
         Mockito.verify(categoryRepository).deleteById(id);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test
     public void deleteById_CategoryIsNotPresentInTheDatabase_ShouldThrowServiceException() throws ServiceException {
 
         /* Given */
@@ -209,7 +215,13 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(id)).thenReturn(optional);
 
         /* Then */
-        categoryService.deleteById(id);
+        try {
+            categoryService.deleteById(id);
+        } catch (ServiceException exception) {
+            Assert.assertEquals(
+                    String.format("Product with %d is not present in the database.", id),
+                    exception.getMessage());
+        }
 
         Mockito.verify(validator).validateId(id);
         Mockito.verify(categoryRepository).findById(id);

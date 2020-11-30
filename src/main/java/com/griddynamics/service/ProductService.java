@@ -92,7 +92,8 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(id);
 
         if (!product.isPresent()) {
-            throw new ServiceException("Product with " + id + " is not present in the database.");
+            throw new ServiceException(
+                    String.format("Product with %d is not present in the database.", id));
         }
 
         productRepository.deleteById(id);

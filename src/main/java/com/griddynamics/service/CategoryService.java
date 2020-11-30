@@ -92,7 +92,7 @@ public class CategoryService {
         Optional<Category> optCategory = categoryRepository.findById(id);
 
         if (!optCategory.isPresent()) {
-            throw new ServiceException("Product with " + id + " is not present in the database.");
+            throw new ServiceException(String.format("Product with %d is not present in the database.", id));
         }
 
         categoryRepository.deleteById(id);

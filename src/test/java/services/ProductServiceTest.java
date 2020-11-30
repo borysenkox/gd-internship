@@ -165,8 +165,8 @@ public class ProductServiceTest {
     }
 
 
-    @Test(expected = ServiceException.class)
-    public void update_ObjectWithIDIsNotPresent_ShouldThrowNoSuchElementException() throws ServiceException {
+    @Test
+    public void update_ObjectWithIDIsNotPresent_ShouldThrowServiceException() throws ServiceException {
 
         /* Given */
         Optional<Product> optional = Optional.empty();
@@ -179,11 +179,18 @@ public class ProductServiceTest {
         Mockito.when(productRepository.findById(argument.getId())).thenReturn(optional);
 
         /* Then */
-        productService.update(productDTO);
+        try {
+            productService.update(productDTO);
+        } catch (ServiceException exception) {
+            Assert.assertEquals(
+                    "Cannot update product. There is wrong argument product id OR such " +
+                    "element is not present in the database.", exception.getMessage());
+        }
 
         Mockito.verify(validator).validateId(ProductServiceTest.productDTO.getId());
         Mockito.verify(productRepository).findById(productDTO.getId());
-        Mockito.verify(productMapper, Mockito.never()).mapUpdate(productDTO, Mockito.any(Product.class));
+        Mockito.verify(productMapper, Mockito.never()).mapUpdate(Mockito.any(ProductDTO.class),
+                                                                    Mockito.any(Product.class));
         Mockito.verify(productRepository, Mockito.never()).save(Mockito.any(Product.class));
         Mockito.verify(productMapper, Mockito.never()).mapDTO(Mockito.any(Product.class));
     }
@@ -206,9 +213,8 @@ public class ProductServiceTest {
 
     }
 
-    @Test(expected = ServiceException.class)
+    @Test
     public void deleteById_ObjectIsNotPresent_ShouldThrowServiceException() throws ServiceException {
-
 
         /* Given */
         Integer id = 2;
@@ -217,7 +223,13 @@ public class ProductServiceTest {
         Mockito.when(productRepository.findById(id)).thenReturn(Optional.empty());
 
         /* Then */
-        productService.deleteById(id);
+        try {
+            productService.deleteById(id);
+        } catch (ServiceException exception) {
+            Assert.assertEquals(
+                    String.format("Product with %d is not present in the database.", id),
+                    exception.getMessage());
+        }
 
         Mockito.verify(validator).validateId(id);
         Mockito.verify(productRepository).findById(id);
