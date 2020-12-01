@@ -6,6 +6,7 @@ import com.griddynamics.exceptions.ServiceException;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
 import com.griddynamics.validators.Validator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -36,6 +38,7 @@ public class ProductService {
 
         Iterable<Product> productIterable = productRepository.findAll();
 
+        log.info("Getting Product list");
         return productMapper.mapDTOList(productIterable);
     }
 
@@ -50,7 +53,7 @@ public class ProductService {
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
         }
-
+        log.info("Getting Product by id " + id);
         return productDTO;
     }
 
@@ -62,6 +65,7 @@ public class ProductService {
 
         product = productRepository.save(product);
 
+        log.info("Saving Product");
         return productMapper.mapDTO(product);
     }
 
@@ -82,6 +86,7 @@ public class ProductService {
 
         product = productRepository.save(product);
 
+        log.info("Updating product");
         return productMapper.mapDTO(product);
     }
 
@@ -96,6 +101,7 @@ public class ProductService {
                     String.format("Product with %d is not present in the database.", id));
         }
 
+        log.info("Deleting product by id " + id);
         productRepository.deleteById(id);
     }
 

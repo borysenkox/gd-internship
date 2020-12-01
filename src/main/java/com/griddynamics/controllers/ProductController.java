@@ -52,7 +52,7 @@ public class ProductController {
         }
 
         if (product == null) {
-            log.error("Product is not exists");
+            log.error("Product with id " + id + " is not exists");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -66,7 +66,7 @@ public class ProductController {
         ProductDTO addedProduct;
 
         try {
-            log.info("Trying to save product to DB");
+            log.info("Trying to save product to database");
             addedProduct = productService.save(product);
         } catch (ServiceException ex) {
             log.error("Can't save product");
