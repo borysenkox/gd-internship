@@ -53,7 +53,7 @@ public class ProductService {
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
         }
-        log.info("Getting Product by id " + id);
+        log.info("Getting Product with id = {}", id);
         return productDTO;
     }
 
@@ -101,7 +101,7 @@ public class ProductService {
                     String.format("Product with %d is not present in the database.", id));
         }
 
-        log.info("Deleting product by id " + id);
+        log.info("Deleting product with id = {}", id);
         productRepository.deleteById(id);
     }
 

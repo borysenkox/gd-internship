@@ -44,19 +44,19 @@ public class ProductController {
         ProductDTO product;
 
         try {
-            log.info("Trying get product by id " + id);
+            log.info("Trying get product with id = {}", id);
             product = productService.getById(id);
         } catch (ServiceException ex) {
-            log.error("Product with id " + id + " not found");
+            log.error("Product with id = {} not found", id, ex);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if (product == null) {
-            log.error("Product with id " + id + " is not exists");
+            log.error("Product with id = {} doesn't exists", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        log.info("Product with id " + id + " returned successfully");
+        log.info("Product with id = {} returned successfully", id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class ProductController {
             log.info("Trying to save product to database");
             addedProduct = productService.save(product);
         } catch (ServiceException ex) {
-            log.error("Can't save product");
+            log.error("Can't save product", ex);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -85,8 +85,8 @@ public class ProductController {
         try {
             log.info("Trying to update product");
             updatedProduct = productService.update(product);
-        } catch (ServiceException e) {
-            log.error("Can't update product");
+        } catch (ServiceException ex) {
+            log.error("Can't update product", ex);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -98,14 +98,14 @@ public class ProductController {
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Integer id) {
 
         try {
-            log.info("Trying to delete product with id " + id);
+            log.info("Trying to delete product with id = {}", id);
             productService.deleteById(id);
-        } catch (ServiceException e) {
-            log.error("Product with id " + id + " not found");
+        } catch (ServiceException ex) {
+            log.error("Product with id = {} not found.", id, ex);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        log.info("Product with id " + id + " deleted successfully");
+        log.info("Product with id = {} deleted successfully", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
