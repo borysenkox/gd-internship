@@ -3,14 +3,15 @@ package services;
 import com.griddynamics.dto.CategoryDTO;
 import com.griddynamics.entities.Category;
 import com.griddynamics.exceptions.ServiceException;
-import com.griddynamics.exceptions.ValidationException;
 import com.griddynamics.mappers.CategoryMapper;
 import com.griddynamics.repositories.CategoryRepository;
 import com.griddynamics.service.CategoryService;
 import com.griddynamics.validators.Validator;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,8 +47,11 @@ public class CategoryServiceTest {
     @InjectMocks
     private CategoryService categoryService;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
-    public void beforeAllMethods() {
+    public void init() {
         category = new Category(1, "category", null);
 
         categoryWithoutId = new Category("category", null);
@@ -167,14 +171,13 @@ public class CategoryServiceTest {
         /* When */
         Mockito.when(categoryRepository.findById(updateCategory.getId())).thenReturn(Optional.empty());
 
-        /* Then */
+        /* Expected */
+        thrown.expect(ServiceException.class);
+        thrown.expectMessage("Cannot update category. There is wrong argument category id OR such " +
+                "element is not present in the database.");
 
-        try {
-            categoryService.update(updateCategory);
-        } catch (ServiceException exception) {
-            Assert.assertEquals("Cannot update category. There is wrong argument category id OR such " +
-                    "element is not present in the database.", exception.getMessage());
-        }
+        /* Then */
+        categoryService.update(updateCategory);
 
         Mockito.verify(validator).validateId(updateCategory.getId());
         Mockito.verify(categoryRepository).findById(updateCategory.getId());
@@ -214,14 +217,12 @@ public class CategoryServiceTest {
         /* When */
         Mockito.when(categoryRepository.findById(id)).thenReturn(optional);
 
+        /* Expected */
+        thrown.expect(ServiceException.class);
+        thrown.expectMessage(String.format("Product with %d is not present in the database.", id));
+
         /* Then */
-        try {
-            categoryService.deleteById(id);
-        } catch (ServiceException exception) {
-            Assert.assertEquals(
-                    String.format("Product with %d is not present in the database.", id),
-                    exception.getMessage());
-        }
+        categoryService.deleteById(id);
 
         Mockito.verify(validator).validateId(id);
         Mockito.verify(categoryRepository).findById(id);

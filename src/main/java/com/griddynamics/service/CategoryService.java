@@ -21,6 +21,11 @@ public class CategoryService {
 
     private final EntityMapper<Category, CategoryDTO> categoryMapper;
 
+    private static final String UPDATE_EXCEPTION = "Cannot update category. There is wrong " +
+            "argument category id OR such element is not present in the database.";
+
+    private static final String DELETE_EXCEPTION = "Product with %d is not present in the database.";
+
     @Autowired
     public CategoryService(CategoryRepository categoryRepository, Validator<CategoryDTO> validator,
                            EntityMapper<Category, CategoryDTO> categoryMapper) {
@@ -45,11 +50,9 @@ public class CategoryService {
 
         Optional<Category> optCategory = categoryRepository.findById(id);
 
-        CategoryDTO categoryDTO = null;
+        CategoryDTO categoryDTO;
 
-        if (optCategory.isPresent()) {
-            categoryDTO = categoryMapper.mapDTO(optCategory.get());
-        }
+        categoryDTO = categoryMapper.mapDTO(optCategory.orElse(null));
 
         return categoryDTO;
     }
@@ -71,12 +74,9 @@ public class CategoryService {
 
         Optional<Category> optCategory = categoryRepository.findById(categoryDTO.getId());
 
-        if (!optCategory.isPresent()) {
-            throw new ServiceException("Cannot update category. There is wrong argument category id OR such " +
-                    "element is not present in the database.");
-        }
 
-        Category category = optCategory.get();
+        Category category = optCategory
+                .orElseThrow(() -> new ServiceException(UPDATE_EXCEPTION));
 
         categoryMapper.mapUpdate(categoryDTO, category);
 
@@ -91,9 +91,9 @@ public class CategoryService {
 
         Optional<Category> optCategory = categoryRepository.findById(id);
 
-        if (!optCategory.isPresent()) {
-            throw new ServiceException(String.format("Product with %d is not present in the database.", id));
-        }
+        optCategory.orElseThrow(() -> new ServiceException(
+                String.format(DELETE_EXCEPTION, id)));
+
 
         categoryRepository.deleteById(id);
     }
