@@ -4,16 +4,11 @@ import com.griddynamics.dto.CategoryDTO;
 import com.griddynamics.entities.Category;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 @Component
 public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
     @Override
     public CategoryDTO mapDTO(Category category) {
+
         CategoryDTO categoryDTO = new CategoryDTO();
 
         mapDTO(category, categoryDTO);
@@ -23,6 +18,7 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public Category mapEntity(CategoryDTO categoryDTO) {
+
         Category category = new Category();
 
         mapEntity(categoryDTO, category);
@@ -32,6 +28,11 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public CategoryDTO mapDTO(Category category, CategoryDTO categoryDTO) {
+
+        if (category == null || categoryDTO == null) {
+            return null;
+        }
+
         categoryDTO.setId(category.getId());
         categoryDTO.setName(category.getName());
         categoryDTO.setParent(category.getParent());
@@ -42,6 +43,10 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
     @Override
     public Category mapEntity(CategoryDTO categoryDTO, Category category) {
 
+        if (categoryDTO == null || category == null) {
+            return null;
+        }
+
         category.setId(categoryDTO.getId());
         category.setName(categoryDTO.getName());
         category.setParent(categoryDTO.getParent());
@@ -51,6 +56,10 @@ public class CategoryMapper extends EntityMapper<Category, CategoryDTO> {
 
     @Override
     public Category mapUpdate(CategoryDTO categoryDTO, Category category) {
-        return null;
+
+        category.setName(categoryDTO.getName() == null ? category.getName() : categoryDTO.getName());
+        category.setParent(categoryDTO.getParent() == null ? category.getParent() : categoryDTO.getParent());
+
+        return category;
     }
 }

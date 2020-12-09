@@ -4,6 +4,7 @@ import com.griddynamics.dto.AbstractDTO;
 import com.griddynamics.entities.AbstractEntity;
 import com.griddynamics.exceptions.MappingException;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import java.util.stream.StreamSupport;
  * @param <D> DTO class.
  */
 
+@Component
 public abstract class EntityMapper<E extends AbstractEntity, D extends AbstractDTO> {
 
 

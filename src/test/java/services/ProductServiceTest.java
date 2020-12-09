@@ -7,23 +7,20 @@ import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
 import com.griddynamics.service.ProductService;
 import com.griddynamics.validators.Validator;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import java.util.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
     private static Product product;
@@ -53,15 +50,16 @@ public class ProductServiceTest {
     @Test
     public void findAll_DatabaseHasSomeItems_ShouldReturnListOfThreeEntities() {
 
+        /* Given */
         List<Product> productList = Collections.singletonList(product);
         List<ProductDTO> expected = Collections.singletonList(productDTO);
         Iterable<Product> iterable = productList;
 
-
+        /* When */
         Mockito.when(productRepository.findAll()).thenReturn(iterable);
         Mockito.when(productMapper.mapDTOList(iterable)).thenReturn(expected);
 
-
+        /* Then */
         List<ProductDTO> actual = productService.findAll();
 
         Assert.assertEquals(expected, actual);
@@ -71,15 +69,17 @@ public class ProductServiceTest {
 
     @Test
     public void getById_IdIsPresentInDatabase_ShouldReturnExactEntity() throws ServiceException {
+
+        /* Given */
         Integer id = 1;
 
         Optional<Product> optional = Optional.of(product);
 
-
+        /* When */
         Mockito.when(productRepository.findById(id)).thenReturn(optional);
         Mockito.when(productMapper.mapDTO(product)).thenReturn(productDTO);
 
-
+        /* Then */
         ProductDTO actual = productService.getById(id);
 
         Mockito.verify(validator).validateId(id);
@@ -90,6 +90,9 @@ public class ProductServiceTest {
 
     @Test
     public void getById_IdIsNotPresent_ShouldReturnNull() throws ServiceException {
+
+        /* Given */
+
         Integer id = 2;
 
         ProductDTO productDTO = new ProductDTO();
@@ -97,10 +100,10 @@ public class ProductServiceTest {
 
         Optional<Product> optional = Optional.empty();
 
-
+        /* When */
         Mockito.when(productRepository.findById(id)).thenReturn(optional);
 
-
+        /* Then */
         ProductDTO actual = productService.getById(id);
 
         Mockito.verify(validator).validateId(id);
@@ -112,16 +115,17 @@ public class ProductServiceTest {
     @Test
     public void save_ProductDTOIsValid_ShouldSaveEntityAtDataBase() throws ServiceException {
 
+        /* Given */
         Product productWithoutID = new Product(null, "Product", 1300., "description",
                 "brand", "image", new ArrayList<>());
 
         ProductDTO productDTO = new ProductDTO(productWithoutID);
 
-
+        /* When */
         Mockito.when(productMapper.mapEntity(productDTO)).thenReturn(productWithoutID);
         Mockito.when(productRepository.save(productWithoutID)).thenReturn(product);
 
-
+        /* Then */
         productService.save(productDTO);
 
         Mockito.verify(validator).validateDTO(productDTO);
@@ -131,6 +135,8 @@ public class ProductServiceTest {
 
     @Test
     public void update_ObjectIsPresentInTheDatabaseAndDataIsValid_ShouldReturnUpdatedObject() throws ServiceException {
+
+        /* Given */
         Optional<Product> optional = Optional.of(product);
 
         ProductDTO productDTO = new ProductDTO();
@@ -143,12 +149,12 @@ public class ProductServiceTest {
             return product;
         };
 
-
+        /* When */
         Mockito.when(productRepository.findById(productDTO.getId())).thenReturn(optional);
         Mockito.when(productMapper.mapUpdate(productDTO, product)).then(answer);
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
-
+        /* Then */
         productService.update(productDTO);
 
         Mockito.verify(validator).validateId(ProductServiceTest.productDTO.getId());
@@ -159,35 +165,46 @@ public class ProductServiceTest {
     }
 
 
-    @Test(expected = NoSuchElementException.class)
-    public void update_ObjectWithIDIsNotPresent_ShouldThrowNoSuchElementException() throws ServiceException {
+    @Test
+    public void update_ObjectWithIDIsNotPresent_ShouldThrowServiceException() throws ServiceException {
+
+        /* Given */
         Optional<Product> optional = Optional.empty();
 
         ProductDTO argument = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setName("Another Name");
 
-
+        /* When */
         Mockito.when(productRepository.findById(argument.getId())).thenReturn(optional);
 
-
-        productService.update(productDTO);
+        /* Then */
+        try {
+            productService.update(productDTO);
+        } catch (ServiceException exception) {
+            Assert.assertEquals(
+                    "Cannot update product. There is wrong argument product id OR such " +
+                    "element is not present in the database.", exception.getMessage());
+        }
 
         Mockito.verify(validator).validateId(ProductServiceTest.productDTO.getId());
         Mockito.verify(productRepository).findById(productDTO.getId());
-        Mockito.verify(productMapper, Mockito.never()).mapUpdate(productDTO, Mockito.any(Product.class));
+        Mockito.verify(productMapper, Mockito.never()).mapUpdate(Mockito.any(ProductDTO.class),
+                                                                    Mockito.any(Product.class));
         Mockito.verify(productRepository, Mockito.never()).save(Mockito.any(Product.class));
         Mockito.verify(productMapper, Mockito.never()).mapDTO(Mockito.any(Product.class));
     }
 
     @Test
     public void deleteById_ObjectIsPresent_ShouldReturnNothing() throws ServiceException {
+
+        /* Given */
         Integer id = 1;
 
-
+        /* When */
         Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
-
+        /* Then */
         productService.deleteById(id);
 
         Mockito.verify(validator).validateId(id);
@@ -196,15 +213,23 @@ public class ProductServiceTest {
 
     }
 
-    @Test(expected = ServiceException.class)
+    @Test
     public void deleteById_ObjectIsNotPresent_ShouldThrowServiceException() throws ServiceException {
+
+        /* Given */
         Integer id = 2;
 
-
+        /* When */
         Mockito.when(productRepository.findById(id)).thenReturn(Optional.empty());
 
-
-        productService.deleteById(id);
+        /* Then */
+        try {
+            productService.deleteById(id);
+        } catch (ServiceException exception) {
+            Assert.assertEquals(
+                    String.format("Product with %d is not present in the database.", id),
+                    exception.getMessage());
+        }
 
         Mockito.verify(validator).validateId(id);
         Mockito.verify(productRepository).findById(id);
