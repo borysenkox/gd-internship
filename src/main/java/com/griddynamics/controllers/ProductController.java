@@ -26,86 +26,69 @@ public class ProductController {
 
     @GetMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
+
         log.info("Start loading list of products");
+
         List<ProductDTO> products = productService.findAll();
 
         if (products == null) {
-            log.error("Product is not exists");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.error("Products is not exists");
         }
 
         log.info("List of products returned successfully");
+
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id) throws ServiceException {
 
-        ProductDTO product;
+        log.info("Trying get product with id = {}", id);
 
-        try {
-            log.info("Trying get product with id = {}", id);
-            product = productService.getById(id);
-        } catch (ServiceException ex) {
-            log.error("Product with id = {} not found", id, ex);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        ProductDTO product = productService.getById(id);
 
         if (product == null) {
             log.error("Product with id = {} doesn't exists", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         log.info("Product with id = {} returned successfully", id);
+
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @PutMapping("/product")
-    public ResponseEntity<ProductDTO> addNewProduct(@RequestBody ProductDTO product) {
+    public ResponseEntity<ProductDTO> addNewProduct(@RequestBody ProductDTO product) throws ServiceException {
 
-        ProductDTO addedProduct;
+        log.info("Trying to save product to database");
 
-        try {
-            log.info("Trying to save product to database");
-            addedProduct = productService.save(product);
-        } catch (ServiceException ex) {
-            log.error("Can't save product", ex);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        ProductDTO addedProduct = productService.save(product);
 
         log.info("Product saved successfully");
+
         return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/product", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> editProductById(@RequestBody ProductDTO product) {
+    public ResponseEntity<ProductDTO> editProductById(@RequestBody ProductDTO product) throws ServiceException {
 
-        ProductDTO updatedProduct;
+        log.info("Trying to update product");
 
-        try {
-            log.info("Trying to update product");
-            updatedProduct = productService.update(product);
-        } catch (ServiceException ex) {
-            log.error("Can't update product", ex);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        ProductDTO updatedProduct = productService.update(product);
 
         log.info("Product updated successfully");
+
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Integer id) throws ServiceException {
 
-        try {
-            log.info("Trying to delete product with id = {}", id);
-            productService.deleteById(id);
-        } catch (ServiceException ex) {
-            log.error("Product with id = {} not found.", id, ex);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        log.info("Trying to delete product with id = {}", id);
+
+        productService.deleteById(id);
 
         log.info("Product with id = {} deleted successfully", id);
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
