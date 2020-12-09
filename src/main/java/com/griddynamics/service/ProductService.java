@@ -2,6 +2,7 @@ package com.griddynamics.service;
 
 import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Product;
+import com.griddynamics.exceptions.ProductNotFoundException;
 import com.griddynamics.exceptions.ServiceException;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
@@ -39,6 +40,7 @@ public class ProductService {
         Iterable<Product> productIterable = productRepository.findAll();
 
         log.info("Getting Product list");
+
         return productMapper.mapDTOList(productIterable);
     }
 
@@ -48,12 +50,16 @@ public class ProductService {
 
         Optional<Product> optProduct = productRepository.findById(id);
 
-        ProductDTO productDTO = null;
+        ProductDTO productDTO;
 
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
+        } else {
+            throw new ProductNotFoundException("Product is not exist.");
         }
+
         log.info("Getting Product with id = {}", id);
+
         return productDTO;
     }
 
@@ -66,6 +72,7 @@ public class ProductService {
         product = productRepository.save(product);
 
         log.info("Saving Product");
+
         return productMapper.mapDTO(product);
     }
 
@@ -76,7 +83,7 @@ public class ProductService {
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
-            throw new ServiceException("Cannot update product. There is wrong argument product id OR such " +
+            throw new ProductNotFoundException("Cannot update product. There is wrong argument product id OR such " +
                     "element is not present in the database.");
         }
 
@@ -87,6 +94,7 @@ public class ProductService {
         product = productRepository.save(product);
 
         log.info("Updating product");
+
         return productMapper.mapDTO(product);
     }
 
@@ -102,6 +110,7 @@ public class ProductService {
         }
 
         log.info("Deleting product with id = {}", id);
+
         productRepository.deleteById(id);
     }
 
