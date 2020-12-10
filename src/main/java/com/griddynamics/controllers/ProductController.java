@@ -47,10 +47,6 @@ public class ProductController {
 
         ProductDTO product = productService.getById(id);
 
-        if (product == null) {
-            log.error("Product with id = {} doesn't exists", id);
-        }
-
         log.info("Product with id = {} returned successfully", id);
 
         return new ResponseEntity<>(product, HttpStatus.OK);

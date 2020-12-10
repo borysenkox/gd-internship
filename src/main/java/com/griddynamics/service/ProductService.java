@@ -55,7 +55,9 @@ public class ProductService {
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
         } else {
-            throw new ProductNotFoundException("Product is not exist.");
+            log.error("Throwing ProductNotFoundException");
+
+            throw new ProductNotFoundException();
         }
 
         log.info("Getting Product with id = {}", id);
@@ -83,6 +85,8 @@ public class ProductService {
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
+            log.error("Throwing ProductNotFoundException");
+
             throw new ProductNotFoundException("Cannot update product. There is wrong argument product id OR such " +
                     "element is not present in the database.");
         }
