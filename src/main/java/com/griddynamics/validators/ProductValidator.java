@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProductValidator implements Validator<ProductDTO> {
 
-    private static final String EXCEPTION_TEMPLATE = "%s cannot have field '%s' with value %s.";
+    private static final String LOGGER_TEMPLATE = "%s is %s";
 
     private static final String PRODUCT_DTO = "ProductDTO";
 
@@ -21,36 +21,44 @@ public class ProductValidator implements Validator<ProductDTO> {
 
     private static final String VALUE_NULL = "null";
 
+    private static final String LESS_ZERO = "less than 0";
+
     @Override
     public void validateDTO(ProductDTO productDTO) {
+
+        ProductNotFoundException productNotFoundException = new ProductNotFoundException();
+
         if (productDTO == null) {
-            throw new ProductNotFoundException("ProductDTO cannot be null.");
+            log.error(String.format(LOGGER_TEMPLATE, PRODUCT_DTO, VALUE_NULL), productNotFoundException);
+            throw productNotFoundException;
         }
 
         if (productDTO.getName() == null) {
-            throw new ProductNotFoundException(String.format(EXCEPTION_TEMPLATE, PRODUCT_DTO, FIELD_NAME, VALUE_NULL));
+            log.error(String.format(LOGGER_TEMPLATE, FIELD_NAME, VALUE_NULL), productNotFoundException);
+            throw productNotFoundException;
         }
 
         if (productDTO.getPrice() == null) {
-            throw new ProductNotFoundException(String.format(EXCEPTION_TEMPLATE, PRODUCT_DTO, FIELD_PRICE, VALUE_NULL));
-        }
+            log.error(String.format(LOGGER_TEMPLATE, FIELD_PRICE, VALUE_NULL), productNotFoundException);
+            throw productNotFoundException;
 
-        else if(productDTO.getPrice() < 0) {
-            throw new ProductNotFoundException(String.format(EXCEPTION_TEMPLATE, PRODUCT_DTO, FIELD_PRICE, "less than 0"));
+        } else if (productDTO.getPrice() < 0) {
+            log.error(String.format(LOGGER_TEMPLATE, FIELD_PRICE, LESS_ZERO), productNotFoundException);
+            throw productNotFoundException;
         }
     }
 
     @Override
     public void validateId(Integer id) {
 
-        BadIdException e = new BadIdException();
+        BadIdException badIdException = new BadIdException();
 
         if (id == null) {
-            log.error("Product with id = {} is null", id, e);
-            throw new BadIdException();
+            log.error("Product with id = {} is {}", VALUE_NULL, id, badIdException);
+            throw badIdException;
         } else if (id < 0) {
-            log.error("Product id can't be less then 0. Provided {}", id, e);
-            throw new BadIdException();
+            log.error("Product id can't be {}. Provided {}", LESS_ZERO, id, badIdException);
+            throw badIdException;
         }
     }
 }
