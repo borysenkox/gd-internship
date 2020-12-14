@@ -46,8 +46,6 @@ public class ProductService {
 
     public ProductDTO getById(Integer id) throws ServiceException {
 
-        ProductNotFoundException productNotFoundException = new ProductNotFoundException(String.format("Can't get product with id %d", id));
-
         validator.validateId(id);
 
         Optional<Product> optProduct = productRepository.findById(id);
@@ -57,6 +55,8 @@ public class ProductService {
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
         } else {
+            ProductNotFoundException productNotFoundException = new ProductNotFoundException(String.format("Can't get product with id %d", id));
+
             log.error("Throwing ProductNotFoundException", productNotFoundException);
 
             throw productNotFoundException;
@@ -82,14 +82,14 @@ public class ProductService {
 
     public ProductDTO update(ProductDTO productDTO) throws ServiceException {
 
-        ProductNotFoundException productNotFoundException = new ProductNotFoundException("Cannot update product. There is wrong argument product id OR such " +
-                "element is not present in the database.");
-
         validator.validateId(productDTO.getId());
 
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
+            ProductNotFoundException productNotFoundException = new ProductNotFoundException("Cannot update product. There is wrong argument product id OR such " +
+                    "element is not present in the database.");
+
             log.error("Throwing ProductNotFoundException", productNotFoundException);
 
             throw productNotFoundException;
@@ -107,8 +107,6 @@ public class ProductService {
     }
 
     public void deleteById(Integer id) throws ServiceException {
-
-        ProductNotFoundException productNotFoundException = new ProductNotFoundException(String.format("Product with %d is not present in the database.", id));
 
         validator.validateId(id);
 
