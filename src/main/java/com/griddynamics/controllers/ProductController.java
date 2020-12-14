@@ -31,10 +31,6 @@ public class ProductController {
 
         List<ProductDTO> products = productService.findAll();
 
-        if (products == null) {
-            log.error("Products is not exists");
-        }
-
         log.info("List of products returned successfully");
 
         return new ResponseEntity<>(products, HttpStatus.OK);
