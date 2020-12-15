@@ -2,10 +2,12 @@ package com.griddynamics.service;
 
 import com.griddynamics.dto.ProductDTO;
 import com.griddynamics.entities.Product;
+import com.griddynamics.exceptions.ProductNotFoundException;
 import com.griddynamics.exceptions.ServiceException;
 import com.griddynamics.mappers.ProductMapper;
 import com.griddynamics.repositories.ProductRepository;
 import com.griddynamics.validators.Validator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -36,6 +39,8 @@ public class ProductService {
 
         Iterable<Product> productIterable = productRepository.findAll();
 
+        log.info("Getting Product list");
+
         return productMapper.mapDTOList(productIterable);
     }
 
@@ -45,11 +50,19 @@ public class ProductService {
 
         Optional<Product> optProduct = productRepository.findById(id);
 
-        ProductDTO productDTO = null;
+        ProductDTO productDTO;
 
         if (optProduct.isPresent()) {
             productDTO = productMapper.mapDTO(optProduct.get());
+        } else {
+            ProductNotFoundException productNotFoundException = new ProductNotFoundException(String.format("Can't get product with id %d", id));
+
+            log.error("Throwing ProductNotFoundException", productNotFoundException);
+
+            throw productNotFoundException;
         }
+
+        log.info("Getting Product with id = {}", id);
 
         return productDTO;
     }
@@ -62,6 +75,8 @@ public class ProductService {
 
         product = productRepository.save(product);
 
+        log.info("Saving Product");
+
         return productMapper.mapDTO(product);
     }
 
@@ -72,8 +87,12 @@ public class ProductService {
         Optional<Product> optProduct = productRepository.findById(productDTO.getId());
 
         if (!optProduct.isPresent()) {
-            throw new ServiceException("Cannot update product. There is wrong argument product id OR such " +
+            ProductNotFoundException productNotFoundException = new ProductNotFoundException("Cannot update product. There is wrong argument product id OR such " +
                     "element is not present in the database.");
+
+            log.error("Throwing ProductNotFoundException", productNotFoundException);
+
+            throw productNotFoundException;
         }
 
         Product product = optProduct.get();
@@ -81,6 +100,8 @@ public class ProductService {
         productMapper.mapUpdate(productDTO, product);
 
         product = productRepository.save(product);
+
+        log.info("Updating product");
 
         return productMapper.mapDTO(product);
     }
@@ -95,6 +116,8 @@ public class ProductService {
             throw new ServiceException(
                     String.format("Product with %d is not present in the database.", id));
         }
+
+        log.info("Deleting product with id = {}", id);
 
         productRepository.deleteById(id);
     }
